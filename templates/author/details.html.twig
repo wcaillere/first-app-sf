@@ -1,3 +1,20 @@
-<h1>Détails d'un auteur dont l'id est {{ id }}</h1>
+{% extends 'layout.html.twig' %}
 
-<a href="{{ path('author_index') }}">Retour à la liste</a>
+{% block content %}
+    <h1>Détails d'un auteur dont l'id est {{ id }}</h1>
+
+    <a href="{{ path('author_index') }}">Retour à la liste</a>
+{% endblock %}
+
+{% block title %}
+    {{ parent() }} - Détails d'un auteur
+{% endblock %}
+
+{% block css %}
+    {{ parent() }}
+    <style>
+        body {
+            font-size: 24px;
+        }
+    </style>
+{% endblock %}
