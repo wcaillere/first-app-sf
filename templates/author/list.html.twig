@@ -3,6 +3,11 @@
 {% block content %}
     <h1>Liste des auteurs</h1>
 
-    <a href="{{ path('author_details', {'id': '7'}) }}">Détails de l'auteur 7</a>
-    <a href="{{ path('author_details', {'id': '8'}) }}">Détails de l'auteur 8</a>
+    <ul>
+        {% for author in authorList %}
+            <a href="{{ path('author_details', {'id': author.id}) }}">
+                <li>{{ author.firstName }} {{ author.name }}</li>
+            </a>
+        {% endfor %}
+    </ul>
 {% endblock %}
