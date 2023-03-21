@@ -43,7 +43,8 @@ class AppService
     {
         return [
             ['label' => 'Accueil', 'route' => 'home'],
-            ['label' => 'Liste des auteurs', 'route' => 'author_index']
+            ['label' => 'Liste des auteurs', 'route' => 'author_index'],
+            ['label' => 'Editeurs', 'route' => 'publisher_index']
         ];
     }
 }

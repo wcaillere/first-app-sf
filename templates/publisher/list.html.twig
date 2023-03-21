@@ -1,0 +1,14 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <ul>
+        {% for publisher in publisherList %}
+            <li>
+                <a href="{{ path('publisher_details', {'id': publisher.id}) }}">
+                    {{ publisher.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+

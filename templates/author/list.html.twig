@@ -13,7 +13,7 @@
                 <a href="{{ path('author_details', {'id': author.id}) }}">
 
                     <span style="{{ author.id > 3 ? 'font-weight:bold': '' }}">
-                        {{ author.firstName | first }}. {{ author.name | upper }}
+                        {{ author.firstName | first }}. {{ author.lastName | upper }}
                     </span>
 
                     {#  {% if author.id > 2 %}

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Author;
+use App\Repository\AuthorRepository;
 use App\Service\AppService;
 use Doctrine\ORM\EntityManagerInterface;
 use Faker\Factory;
@@ -24,16 +25,16 @@ class AuthorController extends AbstractController
     }
 
     #[Route('/', name: 'author_index')]
-    public function index(): Response
+    public function index(AuthorRepository $repository): Response
     {
         dump($this->service->getAuthorList());
-        return $this->render("author/list.html.twig", ['authorList' => $this->service->getAuthorList()]);
+        return $this->render("author/list.html.twig", ['authorList' => $repository->findAll()]);
     }
 
     #[Route('/{id}', name: 'author_details', requirements: ['id' => '\d+'])]
-    public function details(int $id): Response
+    public function details(int $id, AuthorRepository $repository): Response
     {
-        return $this->render("author/details.html.twig", ['author' => $this->service->getAuthor($id)]);
+        return $this->render("author/details.html.twig", ['author' => $repository->findOneBy(['id' => $id])]);
     }
 
     #[Route('/new/{firstName}/{lastName}', name: 'author_new')]
