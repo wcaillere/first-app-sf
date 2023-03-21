@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Author;
+use App\Form\AuthorType;
 use App\Repository\AuthorRepository;
 use App\Service\AppService;
 use Doctrine\ORM\EntityManagerInterface;
 use Faker\Factory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -56,5 +58,30 @@ class AuthorController extends AbstractController
         $entityManager->flush();
 
         return $this->render('author/new.html.twig', ['author' => $author]);
+    }
+
+    #[Route('/form', name: 'author_form')]
+    public function form(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        // Création de l'entité
+        $author = new Author();
+
+        // Création du formulaire
+        $form = $this->createForm(AuthorType::class, $author, []);
+        // Hydratation du formulaire
+        $form->handleRequest($request);
+
+        // Traitement des données postées
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Sauvegarde
+            $entityManager->persist($author);
+            $entityManager->flush();
+
+            // Redirection
+            return $this->redirectToRoute('author_index');
+        };
+
+        // Affichage de la vue
+        return $this->render('author/form.html.twig', ['authorForm' => $form->createView()]);
     }
 }

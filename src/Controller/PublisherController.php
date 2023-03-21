@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Publisher;
+use App\Form\PublisherType;
 use App\Repository\PublisherRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -35,5 +37,23 @@ class PublisherController extends AbstractController
         $entityManager->flush();
 
         return $this->render('publisher/new.html.twig', ['publisher' => $publisher]);
+    }
+
+    #[Route('/form', name: 'form')]
+    public function form(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $publisher = new Publisher();
+
+        $form = $this->createForm(PublisherType::class, $publisher, []);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($publisher);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('publisher_index');
+        }
+
+        return $this->render('publisher/form.html.twig', ['publisherForm' => $form->createView()]);
     }
 }
