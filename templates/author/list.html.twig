@@ -3,11 +3,28 @@
 {% block content %}
     <h1>Liste des auteurs</h1>
 
+    <p>il y a {{ authorList | length }} auteurs.</p>
+
     <ul>
         {% for author in authorList %}
-            <a href="{{ path('author_details', {'id': author.id}) }}">
-                <li>{{ author.firstName }} {{ author.name }}</li>
-            </a>
+            <li>
+                <a href="{{ path('author_details', {'id': author.id}) }}">
+
+                    <span style="{{ author.id > 3 ? 'font-weight:bold': '' }}">
+                        {{ author.firstName | first }}. {{ author.name | upper }}
+                    </span>
+
+                    {#  {% if author.id > 2 %}
+                        {{ author.firstName }} {{ author.name }}
+                    {% else %}
+                        <strong>{{ author.name }}</strong>
+                    {% endif %}
+                    #}
+
+                </a>
+            </li>
+        {% else %}
+            <p>Il n'y a pas d'auteurs</p>
         {% endfor %}
     </ul>
 {% endblock %}
