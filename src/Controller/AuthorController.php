@@ -23,6 +23,7 @@ class AuthorController extends AbstractController
     #[Route('/', name: 'author_index')]
     public function index(): Response
     {
+        dump($this->service->getAuthorList());
         return $this->render("author/list.html.twig", ['authorList' => $this->service->getAuthorList()]);
     }
 
