@@ -60,12 +60,14 @@ class AuthorController extends AbstractController
         return $this->render('author/new.html.twig', ['author' => $author]);
     }
 
-    #[Route('/form', name: 'author_form')]
-    public function form(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/form', name: 'author_insert_form')]
+    #[Route('/form/{id}', name: 'author_update_form', requirements: ['id' => '\d+'])]
+    public function form(Request $request, EntityManagerInterface $entityManager, Author $author = null): Response
     {
         // Création de l'entité
-        $author = new Author();
-
+        if ($author === null) {
+            $author = new Author();
+        }
         // Création du formulaire
         $form = $this->createForm(AuthorType::class, $author, []);
         // Hydratation du formulaire
@@ -83,5 +85,14 @@ class AuthorController extends AbstractController
 
         // Affichage de la vue
         return $this->render('author/form.html.twig', ['authorForm' => $form->createView()]);
+    }
+
+    #[Route('/delete/{id}', name: 'author_delete', requirements: ['id' => '\d+'])]
+    public function delete(EntityManagerInterface $entityManager, Author $author): Response
+    {
+        $entityManager->remove($author);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('author_index');
     }
 }
