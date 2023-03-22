@@ -106,6 +106,5 @@ class AuthorController extends AbstractController
             $this->addFlash('error', "impossible de trouver l'auteur à supprimer");
         }
         return $this->redirectToRoute('author_index');
-
     }
 }
