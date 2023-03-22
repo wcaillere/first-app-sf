@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/author')]
 class AuthorController extends AbstractController
@@ -62,8 +63,15 @@ class AuthorController extends AbstractController
 
     #[Route('/form', name: 'author_insert_form')]
     #[Route('/form/{id}', name: 'author_update_form', requirements: ['id' => '\d+'])]
-    public function form(Request $request, EntityManagerInterface $entityManager, Author $author = null): Response
+    public function form(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        ValidatorInterface $validator,
+        Author $author = null
+    ): Response
     {
+        $errors = [];
+
         $actionName = 'modification';
         // Création de l'entité
         if ($author === null) {
@@ -71,9 +79,13 @@ class AuthorController extends AbstractController
             $actionName = 'ajout';
         }
         // Création du formulaire
-        $form = $this->createForm(AuthorType::class, $author, []);
+        $form = $this->createForm(AuthorType::class, $author, ['attr' => ['novalidate' => 'novalidate']]);
         // Hydratation du formulaire
         $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            $errors = $validator->validate($author);
+        }
 
         // Traitement des données postées
         if ($form->isSubmitted() && $form->isValid()) {
@@ -88,7 +100,13 @@ class AuthorController extends AbstractController
         };
 
         // Affichage de la vue
-        return $this->render('author/form.html.twig', ['authorForm' => $form->createView()]);
+        return $this->render(
+            'author/form.html.twig',
+            [
+                'authorForm' => $form->createView(),
+                'errors' => $errors
+            ]
+        );
     }
 
     #[Route('/delete/{id}', name: 'author_delete', requirements: ['id' => '\d+'])]
