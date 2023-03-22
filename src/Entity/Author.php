@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AuthorRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -46,9 +48,35 @@ class Author
     ]
     private ?string $bio = null;
 
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Book::class)]
+    private Collection $books;
+
+    public function __construct()
+    {
+        $this->books = new ArrayCollection();
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getBio(): ?string
+    {
+        return $this->bio;
+    }
+
+    public function setBio(?string $bio): self
+    {
+        $this->bio = $bio;
+
+        return $this;
+    }
+
+    public function getFullName(): ?string
+    {
+        return $this->getFirstName() . " " . $this->getLastName();
     }
 
     public function getFirstName(): ?string
@@ -75,15 +103,34 @@ class Author
         return $this;
     }
 
-    public function getBio(): ?string
+    /**
+     * @return Collection<int, Book>
+     */
+    public function getBooks(): Collection
     {
-        return $this->bio;
+        return $this->books;
     }
 
-    public function setBio(?string $bio): self
+    public function addBook(Book $book): self
     {
-        $this->bio = $bio;
+        if (!$this->books->contains($book)) {
+            $this->books->add($book);
+            $book->setAuthor($this);
+        }
 
         return $this;
     }
+
+    public function removeBook(Book $book): self
+    {
+        if ($this->books->removeElement($book)) {
+            // set the owning side to null (unless already changed)
+            if ($book->getAuthor() === $this) {
+                $book->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

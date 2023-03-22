@@ -11,6 +11,23 @@ class AppService
         return 'App service';
     }
 
+    public function getAuthor(int $id): array
+    {
+        $data = array_filter($this->getAuthorList(), function ($item) use ($id) {
+            return $item["id"] == $id;
+        });
+
+        $faker = Factory::create();
+
+        if (count($data) > 0) {
+            $data = $data[array_key_first($data)];
+            $data['bio'] = $faker->text(1000);
+            return $data;
+        } else {
+            return [];
+        }
+    }
+
     public function getAuthorList(): array
     {
         return [
@@ -42,23 +59,6 @@ class AppService
         ];
     }
 
-    public function getAuthor(int $id): array
-    {
-        $data = array_filter($this->getAuthorList(), function ($item) use ($id) {
-            return $item["id"] == $id;
-        });
-
-        $faker = Factory::create();
-
-        if (count($data) > 0) {
-            $data = $data[array_key_first($data)];
-            $data['bio'] = $faker->text(1000);
-            return $data;
-        } else {
-            return [];
-        }
-    }
-
     public function getRoutesForNavbar(): array
     {
         return [
@@ -69,6 +69,10 @@ class AppService
             [
                 'label' => 'Editeurs',
                 'route' => 'publisher_index'
+            ],
+            [
+                'label' => 'Livres',
+                'route' => 'book_index'
             ]
         ];
     }
