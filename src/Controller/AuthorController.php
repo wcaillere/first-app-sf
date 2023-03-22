@@ -64,9 +64,11 @@ class AuthorController extends AbstractController
     #[Route('/form/{id}', name: 'author_update_form', requirements: ['id' => '\d+'])]
     public function form(Request $request, EntityManagerInterface $entityManager, Author $author = null): Response
     {
+        $actionName = 'modification';
         // Création de l'entité
         if ($author === null) {
             $author = new Author();
+            $actionName = 'ajout';
         }
         // Création du formulaire
         $form = $this->createForm(AuthorType::class, $author, []);
@@ -79,6 +81,8 @@ class AuthorController extends AbstractController
             $entityManager->persist($author);
             $entityManager->flush();
 
+            $this->addFlash('success', "votre $actionName est un succès pour l'auteur " . $author->getLastName());
+
             // Redirection
             return $this->redirectToRoute('author_index');
         };
@@ -88,11 +92,20 @@ class AuthorController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: 'author_delete', requirements: ['id' => '\d+'])]
-    public function delete(EntityManagerInterface $entityManager, Author $author): Response
+    public function delete(int $id, AuthorRepository $repository): Response
     {
-        $entityManager->remove($author);
-        $entityManager->flush();
+        try {
+            $author = $repository->find($id);
+            $authorName = $author->getLastName();
 
+            $repository->remove($author, true);
+
+            $this->addFlash('success', "L'auteur $authorName a bien été supprimé");
+
+        } catch (\Throwable $ex) {
+            $this->addFlash('error', "impossible de trouver l'auteur à supprimer");
+        }
         return $this->redirectToRoute('author_index');
+
     }
 }
