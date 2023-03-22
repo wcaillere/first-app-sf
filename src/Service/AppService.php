@@ -14,11 +14,31 @@ class AppService
     public function getAuthorList(): array
     {
         return [
-            ['name' => 'Hugo', 'firstName' => 'Victor', 'id' => 1],
-            ['name' => 'Despentes', 'firstName' => 'Virginie', 'id' => 2],
-            ['name' => 'Sand', 'firstName' => 'Georges', 'id' => 3],
-            ['name' => 'Le Guin', 'firstName' => 'Ursula', 'id' => 4],
-            ['name' => 'Henlein', 'firstName' => 'Robert', 'id' => 5]
+            [
+                'name' => 'Hugo',
+                'firstName' => 'Victor',
+                'id' => 1
+            ],
+            [
+                'name' => 'Despentes',
+                'firstName' => 'Virginie',
+                'id' => 2
+            ],
+            [
+                'name' => 'Sand',
+                'firstName' => 'Georges',
+                'id' => 3
+            ],
+            [
+                'name' => 'Le Guin',
+                'firstName' => 'Ursula',
+                'id' => 4
+            ],
+            [
+                'name' => 'Henlein',
+                'firstName' => 'Robert',
+                'id' => 5
+            ]
         ];
     }
 
@@ -42,9 +62,14 @@ class AppService
     public function getRoutesForNavbar(): array
     {
         return [
-            ['label' => 'Accueil', 'route' => 'home'],
-            ['label' => 'Liste des auteurs', 'route' => 'author_index'],
-            ['label' => 'Editeurs', 'route' => 'publisher_index']
+            [
+                'label' => 'Liste des auteurs',
+                'route' => 'author_index'
+            ],
+            [
+                'label' => 'Editeurs',
+                'route' => 'publisher_index'
+            ]
         ];
     }
 }

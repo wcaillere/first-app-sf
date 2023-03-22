@@ -1,14 +1,28 @@
 {% extends 'layout.html.twig' %}
 
 {% block content %}
-    <ul>
+    <a class="btn btn-primary mb-3" href="{{ path('publisher_form') }}">Ajouter un éditeur</a>
+
+    <table class="table">
+        <thead style="color: beige">
+        <tr>
+            <th>Editeur</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
         {% for publisher in publisherList %}
-            <li>
-                <a href="{{ path('publisher_details', {'id': publisher.id}) }}">
-                    {{ publisher.name }}
-                </a>
-            </li>
+            <tr>
+                <td>
+                    <a href="{{ path('publisher_details', {'id': publisher.id}) }}">
+                        {{ publisher.name }}
+                    </a>
+                </td>
+                <td>
+                    <a class="btn btn-secondary" href="{{ path('publisher_form_update', {'id': publisher.id}) }}">Modifier</a>
+                    <a class="btn btn-danger" href="{{ path('publisher_delete', {'id': publisher.id}) }}">Supprimer</a>
+                </td>
+            </tr>
         {% endfor %}
-    </ul>
+    </table>
 {% endblock %}
 

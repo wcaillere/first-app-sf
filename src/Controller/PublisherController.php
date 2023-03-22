@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Author;
 use App\Entity\Publisher;
 use App\Form\PublisherType;
 use App\Repository\PublisherRepository;
@@ -10,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/publisher', name: 'publisher_')]
 class PublisherController extends AbstractController
@@ -40,20 +42,59 @@ class PublisherController extends AbstractController
     }
 
     #[Route('/form', name: 'form')]
-    public function form(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('form/{id}', name: 'form_update', requirements: ['id' => '\d+'])]
+    public function form(
+        Request                $request,
+        EntityManagerInterface $entityManager,
+        ValidatorInterface     $validator,
+        Publisher              $publisher = null
+    ): Response
     {
-        $publisher = new Publisher();
+        $errors = [];
 
-        $form = $this->createForm(PublisherType::class, $publisher, []);
+        $actionName = 'modification';
+        if ($publisher === null) {
+            $publisher = new Publisher();
+            $actionName = 'ajout';
+        }
+
+        $form = $this->createForm(PublisherType::class, $publisher, ['attr' => ['novalidate' => 'novalidate']]);
         $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            $errors = $validator->validate($publisher);
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($publisher);
             $entityManager->flush();
 
+            $this->addFlash('success', "votre $actionName est un succès pour l'auteur " . $publisher->getName());
+
             return $this->redirectToRoute('publisher_index');
         }
 
-        return $this->render('publisher/form.html.twig', ['publisherForm' => $form->createView()]);
+        return $this->render('publisher/form.html.twig', [
+            'publisherForm' => $form->createView(),
+            'errors' => $errors
+        ]);
+    }
+
+    #[Route('/delete/{id}', name: 'delete')]
+    public function delete(int $id, PublisherRepository $repository): Response
+    {
+        try {
+            $publisher = $repository->find($id);
+            $publisherName = $publisher->getName();
+
+            $repository->remove($publisher, true);
+
+            $this->addFlash('success', "L'auteur $publisherName a bien été supprimé");
+
+        } catch (\Throwable $ex) {
+            $this->addFlash('error', "impossible de trouver l'auteur à supprimer");
+        }
+
+        return $this->redirectToRoute('publisher_index');
     }
 }
