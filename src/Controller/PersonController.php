@@ -17,7 +17,7 @@ class PersonController extends AbstractController
     #[Route('/form/{id}', name: "update_form")]
     public function form(Request $request, EntityManagerInterface $entityManager, Person $person = null): Response
     {
-        if ($person = null) {
+        if ($person == null) {
             $person = new Person();
         }
 
