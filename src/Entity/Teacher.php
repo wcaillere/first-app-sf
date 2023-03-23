@@ -28,7 +28,7 @@ class Teacher extends Person
 
     public function getId(): ?int
     {
-        return $this->id;
+        return parent::getId();
     }
 
     public function getDailyRate(): ?int
