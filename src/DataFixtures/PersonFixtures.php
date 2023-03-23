@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Address;
 use App\Entity\Person;
+use App\Entity\Skill;
 use App\Entity\Student;
 use App\Entity\Teacher;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -24,7 +25,10 @@ class PersonFixtures extends Fixture
                 ->setLastName('Koudelka')
                 ->setDateOfBirth(new \DateTime('1945-2-8'))
                 ->setDailyRate(400)
-                ->setAddress($address);
+                ->setAddress($address)
+                ->addSkill((new Skill())->setSkillName('PHP'))
+                ->addSkill((new Skill())->setSkillName('Java'))
+                ->addSkill((new Skill())->setSkillName('Python'));
 
         $student = (new Student())->setFirstName('Sophie')
                                   ->setLastName('Calle')
