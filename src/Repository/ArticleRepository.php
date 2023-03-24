@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Article;
+use App\Entity\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -23,20 +25,55 @@ class ArticleRepository extends ServiceEntityRepository
 
     public function save(Article $entity, bool $flush = false): void
     {
-        $this->getEntityManager()->persist($entity);
+        $this->getEntityManager()
+             ->persist($entity);
 
         if ($flush) {
-            $this->getEntityManager()->flush();
+            $this->getEntityManager()
+                 ->flush();
         }
     }
 
     public function remove(Article $entity, bool $flush = false): void
     {
-        $this->getEntityManager()->remove($entity);
+        $this->getEntityManager()
+             ->remove($entity);
 
         if ($flush) {
-            $this->getEntityManager()->flush();
+            $this->getEntityManager()
+                 ->flush();
         }
+    }
+
+    public function getArticleCountByAuthor(): Query
+    {
+        $qb = $this->createQueryBuilder('article')
+                   ->select('a.id as author_id, a.nickName, count(article.id) as nb')
+                   ->join('article.author', 'a')
+                   ->groupBy('a.id');
+
+        return $qb->getQuery();
+    }
+
+    public function getArticleCountByTag(): Query
+    {
+        $qb = $this->createQueryBuilder('article')
+                   ->select('t.id as tag_id, t.tagName, count(article.id) as nb')
+                   ->join('article.tags', 't')
+                   ->groupBy('t.id');
+
+        return $qb->getQuery();
+    }
+
+    public function getArticlesByTag(Tag $tag)
+    {
+        return $this->createQueryBuilder('a')
+                    ->select('a')
+                    ->join('a.tags', 't')
+                    ->where('t.tagName=:tagName')
+                    ->setParameter(':tagName', $tag->getTagName())
+                    ->getQuery()
+                    ->getResult();
     }
 
 //    /**

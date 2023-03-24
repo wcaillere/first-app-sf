@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Article;
 use App\Entity\Comment;
+use App\Entity\Tag;
 use App\Entity\Theme;
 use App\Entity\User;
 use App\Factory\UserFactory;
@@ -29,7 +30,7 @@ class BlogController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'details')]
+    #[Route('/{id}', name: 'details', requirements: ['id' => '\d+'])]
     public function details(Article                $article,
                             Request                $request,
                             UserRepository         $repository,
@@ -83,6 +84,39 @@ class BlogController extends AbstractController
                 'articleList' => $articleList,
                 'title'       => 'Liste des articles par auteur',
                 'crit'        => $author->getNickName()
+            ]
+        );
+    }
+
+    #[Route('/byTag/{id}', name: 'byTag')]
+    public function byTag(Tag $tag, ArticleRepository $repository): Response
+    {
+        $articleList = $repository->getArticlesByTag($tag);
+
+        return $this->render(
+            'blog/list.html.twig',
+            [
+                'articleList' => $articleList,
+                'title'       => 'Liste des articles par tag',
+                'crit'        => $tag->getTagName()
+            ]
+        );
+    }
+
+    #[Route('/aside', name: 'aside')]
+    public function aside(ArticleRepository $repository): Response
+    {
+        $countByAuthor = $repository->getArticleCountByAuthor()
+                                    ->getResult();
+
+        $countByTag = $repository->getArticleCountByTag()
+                                 ->getResult();
+
+        return $this->render(
+            'blog/aside.html.twig',
+            [
+                'countByAuthor' => $countByAuthor,
+                'countByTag'    => $countByTag
             ]
         );
     }
