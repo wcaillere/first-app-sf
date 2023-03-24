@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Article;
 use App\Entity\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -81,6 +83,40 @@ class ArticleRepository extends ServiceEntityRepository
                     ->join('a.tags', 't')
                     ->where('t.tagName=:tagName')
                     ->setParameter(':tagName', $tag->getTagName())
+                    ->getQuery()
+                    ->getResult();
+    }
+
+    public function getArticlesByYear(int $year)
+    {
+        return $this->createQueryBuilder('a')
+                    ->select('a')
+                    ->where('year(a.publishedAt)=:year')
+                    ->setParameter(':year', $year)
+                    ->orderBy('a.publishedAt', 'DESC')
+                    ->getQuery()
+                    ->getResult();
+    }
+
+    public function getArticleAverageRating(int $id)
+    {
+        return $this->createQueryBuilder('a')
+                    ->select('a.id, avg(c.rating) as note')
+                    ->join('a.comments', 'c')
+                    ->where('c.article=:id')
+                    ->setParameter(':id', $id)
+                    ->getQuery()
+                    ->getSingleScalarResult();
+    }
+
+    public function getArticlesByRating(int $nb)
+    {
+        return $this->createQueryBuilder('a')
+                    ->select('a, avg(c.rating) as rating')
+                    ->join('a.comments', 'c')
+                    ->setMaxResults($nb)
+                    ->orderBy('rating', 'DESC')
+                    ->groupBy('a.id')
                     ->getQuery()
                     ->getResult();
     }

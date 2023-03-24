@@ -8,6 +8,8 @@
         par <a href='{{ path('blog_byAuthor', {'id': article.author.id}) }}'>{{ article.author.nickName }}</a>
         ({{ article.author.firstName }} {{ article.author.lastName | upper }})
         <br>
+        Note: {{ rating }}
+        <br>
         theme : <a href="{{ path('blog_byTheme', {'id': article.theme.id}) }}">{{ article.theme.themeName }}</a>
     </p>
     <ul>

@@ -11,7 +11,9 @@
 <ul class="list-group mb-2">
     {% for year in countByYear %}
         <li class="list-group-item">
-            {{ year.yearPublished }} ({{ year.nb }})
+            <a href="{{ path('blog_byYear', {'year': year.yearPublished}) }}">
+                {{ year.yearPublished }} ({{ year.nb }})
+            </a>
         </li>
     {% endfor %}
 </ul>
@@ -19,7 +21,8 @@
 <h2>Liste des auteurs</h2>
 <ul class="list-group">
     {% for item in countByAuthor %}
-        <li class="list-group-item"><a href="{{ path('blog_byAuthor', {'id': item.author_id}) }}">{{ item.nickName }}
+        <li class="list-group-item"><a
+                    href="{{ path('blog_byAuthor', {'id': item.author_id}) }}">{{ item.nickName }}
                 ({{ item.nb }})</a>
         </li>
     {% endfor %}
