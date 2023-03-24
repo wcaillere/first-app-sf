@@ -54,7 +54,7 @@ final class ArticleFactory extends ModelFactory
         return [
             'author'      => UserFactory::new(),
             'theme'       => ThemeFactory::new(),
-            'content'     => self::faker()->text(255),
+            'content'     => self::faker()->text(1500),
             'createdAt'   => self::faker()->dateTime(),
             'publishedAt' => self::faker()->dateTime(),
             'title'       => self::faker()->bs(),
