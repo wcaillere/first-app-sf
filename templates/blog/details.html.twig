@@ -1,0 +1,36 @@
+{% extends 'blog_layout.html.twig' %}
+
+{% block content %}
+    <h1>{{ article.title }}</h1>
+
+    <p>
+        Publié le {{ article.publishedAt | date('d/m/Y') }}
+        par {{ article.author.nickName }}
+        ({{ article.author.firstName }} {{ article.author.lastName | upper }})
+        <br>
+        theme : <a href="{{ path('blog_byTheme', {'id': article.theme.id}) }}">{{ article.theme.themeName }}</a>
+    </p>
+    <ul>
+        {% for tag in article.tags %}
+            <li>{{ tag.tagName }}</li>
+        {% endfor %}
+    </ul>
+    <div>
+        {{ article.content }}
+    </div>
+    <hr>
+    <h2>Les commentaires</h2>
+    {{ form(CommentForm) }}
+    <p>Il y a {{ article.comments | length }} commentaires</p>
+    {% for comment in article.comments %}
+        <div class="mb-2">
+            <strong>le {{ comment.createdAt | date('d/m/Y') }}
+                {{ comment.author.nickName }} a dit :</strong>
+            <p>
+                {{ comment.content }}
+            </p>
+        </div>
+        <hr>
+    {% endfor %}
+{% endblock %}
+

@@ -43,6 +43,7 @@ class Article
     private Collection $tags;
 
     #[ORM\OneToMany(mappedBy: 'article', targetEntity: Comment::class)]
+    #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $comments;
 
     public function __construct()
