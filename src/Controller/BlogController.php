@@ -67,10 +67,23 @@ class BlogController extends AbstractController
             [
                 'articleList' => $articleList,
                 'title'       => 'Liste des articles par theme',
-                'theme'       => $theme->getThemeName()
+                'crit'        => $theme->getThemeName()
             ]
         );
     }
 
-    public function userDetails
+    #[Route('/byAuthor/{id}', name: 'byAuthor')]
+    public function byAuthor(User $author, ArticleRepository $repository): Response
+    {
+        $articleList = $repository->findBy(['author' => $author]);
+
+        return $this->render(
+            'blog/list.html.twig',
+            [
+                'articleList' => $articleList,
+                'title'       => 'Liste des articles par auteur',
+                'crit'        => $author->getNickName()
+            ]
+        );
+    }
 }
