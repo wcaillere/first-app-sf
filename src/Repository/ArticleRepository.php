@@ -65,6 +65,15 @@ class ArticleRepository extends ServiceEntityRepository
         return $qb->getQuery();
     }
 
+    public function getArticleCountByYear()
+    {
+        return $this->createQueryBuilder('article')
+                    ->select('year(article.publishedAt) as yearPublished, count(article.id) as nb')
+                    ->groupBy('yearPublished')
+                    ->getQuery()
+                    ->getArrayResult();
+    }
+
     public function getArticlesByTag(Tag $tag)
     {
         return $this->createQueryBuilder('a')

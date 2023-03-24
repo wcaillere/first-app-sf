@@ -116,7 +116,8 @@ class BlogController extends AbstractController
             'blog/aside.html.twig',
             [
                 'countByAuthor' => $countByAuthor,
-                'countByTag'    => $countByTag
+                'countByTag'    => $countByTag,
+                'countByYear'   => $repository->getArticleCountByYear()
             ]
         );
     }

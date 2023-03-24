@@ -7,6 +7,15 @@
     {% endfor %}
 </ul>
 
+<h2>Liste des années</h2>
+<ul class="list-group mb-2">
+    {% for year in countByYear %}
+        <li class="list-group-item">
+            {{ year.yearPublished }} ({{ year.nb }})
+        </li>
+    {% endfor %}
+</ul>
+
 <h2>Liste des auteurs</h2>
 <ul class="list-group">
     {% for item in countByAuthor %}
